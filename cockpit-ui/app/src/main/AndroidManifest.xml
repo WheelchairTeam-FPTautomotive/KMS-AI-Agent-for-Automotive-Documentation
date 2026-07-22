@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Network permission to query RAG backend -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!-- Audio recording for Speech-to-Text -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Car API permissions (Pre-granted on simulated Skycraft system runtime) -->
+    <uses-permission android:name="android.car.permission.CAR_INFO" />
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
+    <uses-permission android:name="android.car.permission.CONTROL_CAR_CLIMATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Copilot"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+        
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                
+                <!-- Display on standard launcher -->
+                <category android:name="android.intent.category.LAUNCHER" />
+                
+                <!-- Display on AAOS Digital Cockpit App Grid launcher -->
+                <category android:name="android.intent.category.CAR_LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

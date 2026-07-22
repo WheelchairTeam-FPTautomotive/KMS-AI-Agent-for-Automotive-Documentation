@@ -1,0 +1,14 @@
+services:
+  kms-docs-api:
+    build: .
+    container_name: kms-docs-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - VECTOR_DB_PATH=.vectordb/
+      - LLM_MODEL=gpt-4o-mini
+    restart: unless-stopped
