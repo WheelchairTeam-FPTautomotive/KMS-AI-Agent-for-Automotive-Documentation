@@ -48,16 +48,31 @@ Implement page-level citation traceability and safety abstention guardrails, int
 
 ---
 
-## Daily Backlog & Milestones
+## Daily Backlog & Milestones (Individual Breakdown)
 
-* **Day 1-2 (August 3-4): Citation Traceability & Voice Processing**
-  * Core AI: Verify page number citations match source PDFs accurately.
-  * Gateway & Android: Wire voice audio recording -> STT transcription -> RAG query -> TTS audio response.
-* **Day 3-4 (August 5-6): Safety Guardrails & Evaluator Compliance**
-  * Core AI: Test abstention rules against adversarial/out-of-scope prompts.
-  * DevOps: Test `scripts/run.sh --input data/public --output outputs/result.json` contract execution.
-* **Day 5-6 (August 7-8): Demo Recording & Final Polish**
-  * Team: Record demonstration video on CarSky simulator showing full workflow.
-  * Android & Gateway: Final UI style tweaks, log cleanup, and code formatting.
-* **Day 7 (August 9): Package & Submit (BEFORE AUGUST 10)**
-  * All: Final submission bundle verification, push code to GitHub organization, and upload submission to portal.
+### Day 1-2 (August 3 - August 4): Citation Traceability & Voice Processing
+* **Thuận**: Implement page-level citation extraction mapping document ID, section name, page number, and matched snippet text.
+* **Ân**: Implement STT transcription handler in `/copilot/voice-query` and configure TTS audio synthesis response routing.
+* **Bảo**: Connect Whisper / TTS sidecar containers and benchmark API gateway latency (< 2.0s).
+* **Bình**: Build Compose mic audio recording UI component and citation display cards with document links.
+* **Đức**: Test voice query flow from AAOS emulator mic input to gateway response playback.
+
+### Day 3-4 (August 5 - August 6): Safety Guardrails & Evaluator Compliance
+* **Thuận**: Implement safety abstention filter (`check_safety_and_scope`) blocking unsafe ("bypass brakes") or off-topic queries.
+* **Ân**: Add response query caching and error handling fallback responses.
+* **Bảo**: Finalize automated evaluator contract script (`kms-core-ai/scripts/run.sh`) and verify `--input` / `--output` execution.
+* **Bình**: Add speed warning alert banner UI overlay triggered when vehicle speed > 80 km/h.
+* **Đức**: Run simulated driving scenarios via `vhal_mock_sender.py` to verify speed alert triggers in AAOS HUD.
+
+### Day 5-6 (August 7 - August 8): Demo Video & Final Polish
+* **Thuận**: Execute evaluation suite, calculate precision/recall/F1 metrics, and write AI methodology report.
+* **Ân**: Perform final API gateway log review and code formatting (`ruff`).
+* **Bảo**: Verify Docker container cold-start performance and sandbox compliance.
+* **Bình**: Finalize Compose HUD styling, typography, and automatic Day/Night theme switching.
+* **Đức**: Record 2-3 minute demonstration video showing voice input, citation cards, and speed warning alerts on CarSky.
+
+### Day 7 (August 9): Final Packaging & Portal Submission (BEFORE AUGUST 10)
+* **Thuận & Ân**: Conduct final query accuracy sanity check across all benchmark datasets.
+* **Bảo**: Build final submission zip package (source code + data + evaluation outputs).
+* **Bình & Đức**: Verify project README documentation links and upload video demo link.
+* **All (Thuận, Ân, Bảo, Bình, Đức)**: Final git push to repository and submit package on FPT Hackathon portal before August 10.
