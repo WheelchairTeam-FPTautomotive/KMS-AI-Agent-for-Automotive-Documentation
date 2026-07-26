@@ -80,10 +80,9 @@ KMS-AI-Agent-for-Automotive-Documentation/
 │   ├── pyproject.toml
 │   └── README.md
 │
-├── 📂 plan/                       ← Sprint plans & architecture diagrams
-│   ├── sprint_1_rag_backend.md
-│   ├── sprint_2_voice_traceability.md
-│   ├── sprint_3_integration_demo.md
+├── 📂 plan/                       ← 2-Week Sprint plans (Submission < August 10) & diagrams
+│   ├── sprint_1_foundation_mvp.md
+│   ├── sprint_2_submission_eval.md
 │   ├── slide8_arch.png
 │   └── slide9_resources.png
 │
@@ -94,8 +93,8 @@ KMS-AI-Agent-for-Automotive-Documentation/
 
 ## 🚀 What You Should Do Right Now
 
-### Step 1: Read the Sprint Plans
-- **Full version** → Read [`plan/sprint_1_rag_backend.md`](plan/sprint_1_rag_backend.md) through `sprint_3`
+### Step 1: Read the 2-Week Sprint Plans (Submission Deadline: August 10)
+- **Full version** → Read [`plan/sprint_1_foundation_mvp.md`](plan/sprint_1_foundation_mvp.md) and [`plan/sprint_2_submission_eval.md`](plan/sprint_2_submission_eval.md)
 - **Docs-only version** → Read [`docs-only/SPRINT_PLAN.md`](docs-only/SPRINT_PLAN.md)
 
 ### Step 2: Clone Your Working Repo

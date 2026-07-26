@@ -1,95 +1,64 @@
-# Sprint Plan — Docs-Only Version (KMS AI Agent for Automotive Documentation)
+# ⚡ Sprint Plan — Docs-Only Version (Accelerated 2-Week Timeline)
 
-> This plan applies **only** when the committee confirms the scope is limited to
-> document retrieval and citation traceability (no voice assistant, no cockpit UI).
+> **Scope**: Document Retrieval, Citation Traceability & Evaluation Scoring  
+> **Timeline**: July 27 – August 9, 2026 (Submission before **August 10, 2026**)
 
 ---
 
-## Sprint 1 — Foundation & Ingestion (Week 1)
+## 📅 Sprint 1 — Ingestion, RAG Pipeline & API Setup (Week 1: July 27 – August 2)
 
 ### Minh Thuận (AI Pipeline Lead)
-- [ ] Select embedding model (text-embedding-3-small vs multilingual-e5-large)
-- [ ] Implement real PDF text extraction in `ingest.py` (replace stubs with PyPDF/pdfplumber)
-- [ ] Define chunking strategy (size, overlap, metadata preservation)
+- [ ] Select embedding model (`text-embedding-3-small` / `multilingual-e5-large`)
+- [ ] Implement PDF text parsing in `ingest.py` (PyPDF / pdfplumber)
+- [ ] Define chunking rules (512 tokens / 64 overlap) preserving document hashes
 - [ ] Initialize ChromaDB collection and verify upsert
 
 ### Thiên Ân (Backend Developer)
-- [ ] Set up FastAPI project, configure CORS, mount Scalar API docs
-- [ ] Define Pydantic request/response schemas with validation
-- [ ] Implement `/api/v1/query` endpoint wiring to the RAG pipeline
-- [ ] Add request logging middleware
+- [ ] Set up FastAPI project on port `8000`, configure CORS, mount Scalar API docs
+- [ ] Define Pydantic request/response schemas with strict validation
+- [ ] Wire `/api/v1/query` endpoint to RAG solver pipeline
+- [ ] Add request logging and error handling middleware
 
 ### Hoàng Bảo (DevOps & Infra)
-- [ ] Finalize Dockerfile and docker-compose.yml
+- [ ] Finalize Dockerfile (multi-stage non-root) and docker-compose.yml
 - [ ] Test containerized startup with volume-mounted `data/` folder
-- [ ] Set up `.env.example` with required environment variables
-- [ ] Configure GitHub Actions CI (lint + unit tests)
+- [ ] Set up `.env.example` with required API keys
+- [ ] Configure rotating file logs
 
 ### Thanh Bình (Data & Evaluation)
 - [ ] Catalog all PDFs from the hackathon dataset
-- [ ] Write sample test queries and expected citation matches
-- [ ] Verify `mapping.json` hash codes align with ingested document IDs
-- [ ] Create a test harness for `solve_problem.py`
+- [ ] Write sample test queries and verify `mapping.json` hash codes
+- [ ] Create test suite for safety filter and scope checking
 
 ### Minh Đức (Quality & Testing)
 - [ ] Write `pytest` unit tests for safety filter and scope validation
-- [ ] Test the `/health` and `/query` endpoints via `httpx`
-- [ ] Document the API contract in the README
+- [ ] Test `/health` and `/query` endpoints via `httpx`
 - [ ] Validate `run.sh` evaluator script produces valid JSON output
 
 ---
 
-## Sprint 2 — RAG Accuracy & Traceability (Week 2)
+## 🚀 Sprint 2 — Accuracy, Traceability & Final Submission (Week 2: August 3 – August 9)
 
-### Minh Thuận
+### Minh Thuận (AI Pipeline Lead)
 - [ ] Implement hybrid retrieval (dense vectors + BM25 keyword matching)
-- [ ] Add re-ranking step (cross-encoder or MMR)
-- [ ] Wire LLM call (OpenAI / Qwen / Llama) with grounding prompt
-- [ ] Tune `TOP_K` and `CHUNK_SIZE` for best retrieval recall
+- [ ] Build page-level citation extraction mapping document ID, section, and snippet
+- [ ] Tune `TOP_K` and prompt templates for precision/recall optimization
+- [ ] Run benchmark evaluator on test datasets
 
-### Thiên Ân
-- [ ] Add session/history storage (SQLite or in-memory)
-- [ ] Implement query deduplication and caching layer
-- [ ] Add response latency tracking headers
+### Thiên Ân (Backend Developer)
+- [ ] Add query caching layer and response latency tracking headers
+- [ ] Implement graceful shutdown and health probe readiness
 
-### Hoàng Bảo
-- [ ] Stress test API under concurrent load (locust / wrk)
-- [ ] Optimize Docker image size (multi-stage build, slim base)
-- [ ] Set up log rotation and monitoring
+### Hoàng Bảo (DevOps & Infra)
+- [ ] Execute `scripts/run.sh --input data/public --output outputs/result.json` contract verification
+- [ ] Stress-test API under concurrent load and optimize cold start
+- [ ] Package final submission zip for portal upload
 
-### Thanh Bình
-- [ ] Expand test query coverage (50+ queries across all document categories)
-- [ ] Build a citation accuracy evaluation script (precision/recall)
-- [ ] Test abstention behavior with unsafe and out-of-scope queries
-
-### Minh Đức
-- [ ] End-to-end integration tests (ingest → query → citation validation)
-- [ ] Verify citation page numbers match actual PDF content
-- [ ] Document known limitations and edge cases
-
----
-
-## Sprint 3 — Polish & Submission (Week 3)
-
-### Minh Thuận
-- [ ] Run official evaluation dataset through `run.sh`
-- [ ] Optimize prompt template for answer quality
-- [ ] Write the AI methodology section of the project report
-
-### Thiên Ân
-- [ ] Final API error handling review
-- [ ] Add graceful shutdown and health probe readiness
-
-### Hoàng Bảo
-- [ ] Package submission zip (code + data + outputs)
-- [ ] Verify evaluator sandbox compatibility
-- [ ] Test cold-start performance
-
-### Thanh Bình
+### Thanh Bình (Data & Evaluation)
 - [ ] Compile evaluation metrics (Precision, Recall, F1, Coverage%)
-- [ ] Compare results across different embedding models
+- [ ] Verify citation page numbers against source PDF manuals
 
-### Minh Đức
-- [ ] Final documentation pass on README and code comments
-- [ ] Record a demo video of the query flow
-- [ ] Proofread project writeup
+### Minh Đức (Quality & Testing)
+- [ ] End-to-end integration testing (ingest → query → citation validation)
+- [ ] Record a 2-minute demo video of the query interface
+- [ ] Final documentation pass on README before **August 10** submission
