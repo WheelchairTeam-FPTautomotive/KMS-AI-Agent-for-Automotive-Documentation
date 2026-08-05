@@ -146,3 +146,17 @@ Car-Sky-Platform.html
 Connected Car.html
 Digital Cockpit.html
 Middleware.html
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Android & Gradle
+.gradle/
+build/
+app/build/
+local.properties
+.idea/
+*.iml

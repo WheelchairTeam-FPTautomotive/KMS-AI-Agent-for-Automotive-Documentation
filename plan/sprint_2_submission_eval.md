@@ -1,9 +1,10 @@
 # 🚀 Sprint 2: Traceability, Evaluation & Submission (Week 2: August 3 – August 9, 2026)
 
-> **Timeline**: August 3 – August 9, 2026  
+> **Timeline**: August 3 – August 9, 2026
 > **Hard Submission Deadline**: **August 10, 2026**
 
 ## Goal
+
 Implement page-level citation traceability and safety abstention guardrails, integrate STT/TTS voice query handlers, optimize RAG retrieval precision and response latency, execute evaluator contract benchmarks (`run.sh`), record the demonstration video, and package final submissions for the committee.
 
 ---
@@ -11,6 +12,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
 ## Team Roles & Task Assignments
 
 ### 1. Nguyễn Minh Thuận (Team Leader · AI Pipeline Architect)
+
 * **Repo**: `kms-core-ai`
 * **Tasks**:
   * Build precise citation extraction mapping page number, document hash, section title, and matched snippet.
@@ -19,6 +21,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
   * Execute evaluation suite and benchmark precision/recall/F1 metrics.
 
 ### 2. Hoàng Thiên Ân (General Application & Backend Cloud)
+
 * **Repo**: `backend-orchestrator`
 * **Tasks**:
   * Hook up audio upload handling in `/copilot/voice-query` with STT transcription.
@@ -26,6 +29,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
   * Add error handling, query caching, and latency tracking headers.
 
 ### 3. Phạm Vũ Hoàng Bảo (System Architecture & Linux Infrastructure)
+
 * **Repo**: `kms-core-ai` / `backend-orchestrator`
 * **Tasks**:
   * Finalize the automated evaluator contract script (`kms-core-ai/scripts/run.sh`) parsing `--input` and `--output`.
@@ -33,6 +37,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
   * Perform load testing and optimize cold-start response latency (< 2.0s).
 
 ### 4. Trần Thanh Bình (Android Automotive UI Developer)
+
 * **Repo**: `cockpit-ui`
 * **Tasks**:
   * Add Compose microphone audio recording visualizer and voice query trigger.
@@ -40,6 +45,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
   * Implement automatic Day/Night UI theme switching following vehicle night mode property.
 
 ### 5. Nguyễn Huỳnh Minh Đức (Embedded Software & VHAL Integration)
+
 * **Repo**: `cockpit-ui`
 * **Tasks**:
   * Test driving scenario simulations using `vhal_mock_sender.py` (speed alerts > 80 km/h trigger warning banner).
@@ -51,6 +57,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
 ## Daily Backlog & Milestones (Individual Breakdown)
 
 ### Day 1-2 (August 3 - August 4): Citation Traceability & Voice Processing
+
 * **Thuận**: Implement page-level citation extraction mapping document ID, section name, page number, and matched snippet text.
 * **Ân**: Implement STT transcription handler in `/copilot/voice-query` and configure TTS audio synthesis response routing.
 * **Bảo**: Connect Whisper / TTS sidecar containers and benchmark API gateway latency (< 2.0s).
@@ -58,6 +65,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
 * **Đức**: Test voice query flow from AAOS emulator mic input to gateway response playback.
 
 ### Day 3-4 (August 5 - August 6): Safety Guardrails & Evaluator Compliance
+
 * **Thuận**: Implement safety abstention filter (`check_safety_and_scope`) blocking unsafe ("bypass brakes") or off-topic queries.
 * **Ân**: Add response query caching and error handling fallback responses.
 * **Bảo**: Finalize automated evaluator contract script (`kms-core-ai/scripts/run.sh`) and verify `--input` / `--output` execution.
@@ -65,6 +73,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
 * **Đức**: Run simulated driving scenarios via `vhal_mock_sender.py` to verify speed alert triggers in AAOS HUD.
 
 ### Day 5-6 (August 7 - August 8): Demo Video & Final Polish
+
 * **Thuận**: Execute evaluation suite, calculate precision/recall/F1 metrics, and write AI methodology report.
 * **Ân**: Perform final API gateway log review and code formatting (`ruff`).
 * **Bảo**: Verify Docker container cold-start performance and sandbox compliance.
@@ -72,6 +81,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
 * **Đức**: Record 2-3 minute demonstration video showing voice input, citation cards, and speed warning alerts on CarSky.
 
 ### Day 7 (August 9): Final Packaging & Portal Submission (BEFORE AUGUST 10)
+
 * **Thuận & Ân**: Conduct final query accuracy sanity check across all benchmark datasets.
 * **Bảo**: Build final submission zip package (source code + data + evaluation outputs).
 * **Bình & Đức**: Verify project README documentation links and upload video demo link.

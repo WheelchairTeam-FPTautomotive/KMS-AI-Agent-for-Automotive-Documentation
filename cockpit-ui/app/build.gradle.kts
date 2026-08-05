@@ -6,6 +6,7 @@ plugins {
 android {
     namespace = "com.wheelchair.cockpit"
     compileSdk = 34
+    useLibrary("android.car")
 
     defaultConfig {
         applicationId = "com.wheelchair.cockpit"
@@ -47,8 +48,7 @@ android {
 
 dependencies {
     // Android Automotive OS SDK Library stubs
-    // android.car is built-in on target VM, use compileOnly to compile without bundling it
-    compileOnly("android.car:android.car:1.0.0") 
+    // android.car is referenced via useLibrary("android.car") above
 
     // UI/Compose Dependencies
     implementation("androidx.core:core-ktx:1.12.0")

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+    <privapp-permissions package="com.wheelchair.cockpit">
+        <permission name="android.car.permission.CONTROL_CAR_CLIMATE"/>
+        <permission name="android.car.permission.CONTROL_CAR_DOORS"/>
+        <permission name="android.car.permission.CAR_SPEED"/>
+        <permission name="android.car.permission.CAR_POWERTRAIN"/>
+        <permission name="android.car.permission.CAR_DRIVING_STATE"/>
+    </privapp-permissions>
+</permissions>
