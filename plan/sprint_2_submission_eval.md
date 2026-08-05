@@ -41,6 +41,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
 * **Repo**: `cockpit-ui`
 * **Tasks**:
   * Add Compose microphone audio recording visualizer and voice query trigger.
+  * Implement background wake-word listener service ("Hey Car") using Foreground Service and `SYSTEM_ALERT_WINDOW` permission to automatically launch/bring the app to foreground when closed or in background.
   * Build dynamic citation card UI components with clickable source document links.
   * Implement automatic Day/Night UI theme switching following vehicle night mode property.
 
@@ -61,7 +62,7 @@ Implement page-level citation traceability and safety abstention guardrails, int
 * **Thuận**: Implement page-level citation extraction mapping document ID, section name, page number, and matched snippet text.
 * **Ân**: Implement STT transcription handler in `/copilot/voice-query` and configure TTS audio synthesis response routing.
 * **Bảo**: Connect Whisper / TTS sidecar containers and benchmark API gateway latency (< 2.0s).
-* **Bình**: Build Compose mic audio recording UI component and citation display cards with document links.
+* **Bình**: Build Compose mic audio recording UI component, citation display cards, and implement the background "Hey Car" wake-word Foreground Service (with `SYSTEM_ALERT_WINDOW` permission for auto-launch).
 * **Đức**: Test voice query flow from AAOS emulator mic input to gateway response playback.
 
 ### Day 3-4 (August 5 - August 6): Safety Guardrails & Evaluator Compliance
