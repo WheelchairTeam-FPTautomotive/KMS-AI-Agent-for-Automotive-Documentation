@@ -4,6 +4,19 @@ This is the **simplified, documentation-focused** version of the project. It str
 
 > **When to use this version**: If the committee scopes the challenge to focus exclusively on document retrieval, citation traceability, and evaluation scoring — without requiring a voice interface or in-vehicle cockpit integration.
 
+## Table of Contents
+
+- [Architecture Overview](#architecture-overview)
+- [Folder Structure](#folder-structure)
+- [Getting Started](#getting-started)
+  - [1. Install Dependencies](#1-install-dependencies)
+  - [2. Ingest Documents](#2-ingest-documents)
+  - [3. Start the API Server](#3-start-the-api-server)
+  - [4. Query the Knowledge Base](#4-query-the-knowledge-base)
+  - [5. Run Offline Evaluation (Evaluator Contract)](#5-run-offline-evaluation-evaluator-contract)
+- [API Endpoints](#api-endpoints)
+- [Team Assignments (Docs-Only Scope)](#team-assignments-docs-only-scope)
+
 ---
 
 ## Architecture Overview

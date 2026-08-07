@@ -3,6 +3,22 @@
 > **Team Wheelchair** — FPT Hackathon 2026  
 > An AI-powered knowledge management system that answers automotive technical questions with **traceable citations** back to source documents.
 
+## Table of Contents
+
+- [Important: Two Project Versions](#important-two-project-versions)
+- [Team Members](#team-members)
+- [Repository Structure](#repository-structure)
+- [What You Should Do Right Now](#what-you-should-do-right-now)
+  - [Step 1: Read the 2-Week Sprint Plans](#step-1-read-the-2-week-sprint-plans-submission-deadline-august-10)
+  - [Step 2: Clone Your Working Repo](#step-2-clone-your-working-repo)
+  - [Step 3: Set Up Your Environment](#step-3-set-up-your-environment)
+  - [Step 4: Check the GitHub Project Board](#step-4-check-the-github-project-board)
+- [Service Ports (Full Version)](#service-ports-full-version)
+- [Service Ports (Docs-Only Version)](#service-ports-docs-only-version)
+- [Evaluator Submission Contract](#evaluator-submission-contract)
+- [Key Technical Docs](#key-technical-docs)
+- [License](#license)
+
 ---
 
 ## ⚠️ Important: Two Project Versions
