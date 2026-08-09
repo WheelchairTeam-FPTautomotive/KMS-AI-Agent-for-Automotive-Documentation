@@ -51,26 +51,31 @@ cd d:\Hackathon\reach_be\reach
 
 *(Lệnh này sẽ chạy liên tục để duy trì mạng tới xe ảo).*
 
-### 5️⃣ ⚠️ BƯỚC BẮT BUỘC: Kết nối & Mở hầm ngược (Terminal 5)
+### 5️⃣ ⚠️ BƯỚC BẮT BUỘC: Kết nối backend (Terminal 5)
 
-Sau khi Terminal 4 báo connected, hãy **mở một cửa sổ gõ lệnh mới (Terminal 5)** và gõ:
+Sau khi Terminal 4 báo connected, mở Terminal 5. **Khuyến nghị (EC2 hoặc local):**
 
 ```powershell
-cd d:\Hackathon
-adb connect localhost:5555
+powershell.exe -ExecutionPolicy Bypass -File "H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\carsky-backend-tunnel.ps1" -Backend Ec2
+# Local gateway: ... -Backend Local
 ```
 
-Tiếp theo, vì xe nằm trên mây (Carsky) còn Backend nằm ở máy bạn, bạn **bắt buộc** phải map port 8000 của xe về port 8000 của máy laptop để STT/TTS gọi được API:
+Script này: `adb reverse` (+ `ssh -L` nếu EC2) và kiểm tra health từ laptop **và** device. Trong app đặt Backend URL = `http://127.0.0.1:8000/` (không dùng EIP — trout không có internet egress).
+
+Chi tiết / TTS speaker: `README-carsky.md`.
+
+Thủ công (local only):
 
 ```powershell
+adb connect localhost:5555
 adb reverse tcp:8000 tcp:8000
 ```
 
-*(Nếu thành công, terminal sẽ in ra số `8000`. **Lưu ý:** Mỗi lần bạn chạy script `push_privapp.ps1` để đẩy App mới, cái hầm này sẽ sập, bạn phải quay lại Terminal 5 và chạy lại lệnh `adb reverse` này một lần!)*
+*(Sau `push_privapp.ps1` / restart framework, chạy lại tunnel script.)*
 
-### 6️⃣ 🎤 Cấu hình Microphone (Đón nhận âm thanh)
+### 6️⃣ 🎤 Cấu hình Microphone + loa (Đón nhận / phát âm thanh)
 
-1. Trên nền tảng web **Carsky**, tìm biểu tượng **Microphone** và bật lên (Cho phép trình duyệt sử dụng Mic).
+1. Trên **Carsky**, bật **Microphone** (mic trình duyệt) **và Audio/speaker** trên panel IVI/WIDE — thiếu loa thì Edge TTS chạy nhưng không nghe.
 2. Lần đầu mở app Wheelchair Copilot trên màn hình xe, app sẽ hỏi quyền **Record Audio**. Hãy bấm **Allow** (Cho phép).
 
 ---

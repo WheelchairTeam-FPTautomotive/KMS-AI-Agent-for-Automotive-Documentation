@@ -1,8 +1,14 @@
-# MODIFIED: Paths updated for H:\Project\KMS / D:\Android\Sdk
+# MODIFIED: Paths for H:\Project\KMS; restore backend tunnel after framework restart
+param(
+    [ValidateSet("Local", "Ec2")]
+    [string]$Backend = "Ec2"
+)
+
 $ADB = "D:\Android\Sdk\platform-tools\adb.exe"
 $s = "localhost:5555"
 $DocRoot = "H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation"
 $Apk = "H:\Project\KMS\cockpit-ui\app\build\outputs\apk\debug\app-debug.apk"
+$Tunnel = Join-Path $DocRoot "carsky-backend-tunnel.ps1"
 
 if (-not (Test-Path $Apk)) {
     Write-Error "APK not found: $Apk - Build APK(s) in Android Studio first."
@@ -24,6 +30,17 @@ Write-Host "Waiting for framework restart..."
 Start-Sleep -Seconds 15
 
 & $ADB connect localhost:5555 | Out-Null
-& $ADB -s $s reverse tcp:8000 tcp:8000
-Write-Host "Priv-app pushed. Reverse 8000 restored."
+
+# --- START MODIFICATION ---
+# Reverse alone is not enough for EC2: also SSH -L via carsky-backend-tunnel.ps1
+if (Test-Path $Tunnel) {
+    & powershell.exe -ExecutionPolicy Bypass -File $Tunnel -Backend $Backend
+} else {
+    & $ADB -s $s reverse tcp:8000 tcp:8000
+    Write-Host "Tunnel script missing; reverse 8000 only."
+}
+# --- END MODIFICATION ---
+
+Write-Host "Priv-app pushed. Backend=$Backend tunnel restored."
+Write-Host "App URL: http://127.0.0.1:8000/"
 Write-Host "Launch: adb -s localhost:5555 shell am start -n com.wheelchair.cockpit/.MainActivity"

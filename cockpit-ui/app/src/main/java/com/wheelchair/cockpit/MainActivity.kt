@@ -20,11 +20,33 @@ import androidx.compose.ui.unit.sp
 import com.wheelchair.cockpit.api.CitationInfo
 import com.wheelchair.cockpit.api.CopilotClient
 import com.wheelchair.cockpit.api.QueryRequest
+import java.util.UUID
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var carPropertyHelper: CarPropertyHelper
+    // --- START MODIFICATION ---
+    private var sessionId: String = UUID.randomUUID().toString()
+    private var sessionTtlMin: Int = 5
+    private var pausedAtMs: Long = 0L
+    // --- END MODIFICATION ---
+
+    override fun onPause() {
+        super.onPause()
+        pausedAtMs = System.currentTimeMillis()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (pausedAtMs > 0L && sessionTtlMin > 0) {
+            val idleMs = System.currentTimeMillis() - pausedAtMs
+            if (idleMs > sessionTtlMin * 60_000L) {
+                sessionId = UUID.randomUUID().toString()
+            }
+        }
+        pausedAtMs = 0L
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +59,25 @@ class MainActivity : ComponentActivity() {
             var citations by remember { mutableStateOf<List<CitationInfo>>(emptyList()) }
             var isRecording by remember { mutableStateOf(false) }
             var isLoading by remember { mutableStateOf(false) }
+            var ttlMin by remember { mutableStateOf(sessionTtlMin) }
+            var stmTurns by remember { mutableStateOf(0) }
             val coroutineScope = rememberCoroutineScope()
+
+            fun syncTtl(v: Int) {
+                ttlMin = v
+                sessionTtlMin = v
+                if (v == 0) {
+                    sessionId = UUID.randomUUID().toString()
+                    stmTurns = 0
+                }
+            }
+
+            fun newChat() {
+                sessionId = UUID.randomUUID().toString()
+                stmTurns = 0
+                copilotAnswer = ""
+                citations = emptyList()
+            }
 
             // Initialize VHAL signal listener
             DisposableEffect(Unit) {
@@ -78,6 +118,11 @@ class MainActivity : ComponentActivity() {
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF38BDF8)
                         )
+                        // --- START MODIFICATION ---
+                        TextButton(onClick = { newChat() }) {
+                            Text("New chat", color = Color(0xFF94A3B8), fontSize = 14.sp)
+                        }
+                        // --- END MODIFICATION ---
                         
                         // Status Panel displaying VHAL metrics
                         Row(
@@ -192,6 +237,40 @@ class MainActivity : ComponentActivity() {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    // --- START MODIFICATION ---
+                    // STM idle TTL: Off / 3 / 5 / 10 minutes
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("STM", color = Color(0xFF94A3B8), fontSize = 13.sp)
+                        listOf(0, 3, 5, 10).forEach { opt ->
+                            val selected = ttlMin == opt
+                            Button(
+                                onClick = { syncTtl(opt) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (selected) Color(0xFF38BDF8) else Color(0xFF1E293B)
+                                ),
+                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                                modifier = Modifier.height(36.dp)
+                            ) {
+                                Text(
+                                    text = if (opt == 0) "Off" else "${opt}m",
+                                    color = if (selected) Color(0xFF0F172A) else Color(0xFFE2E8F0),
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                        Text(
+                            text = "turns=$stmTurns",
+                            color = Color(0xFF64748B),
+                            fontSize = 12.sp
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    // --- END MODIFICATION ---
+
                     // Input Controls Panel
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -220,9 +299,18 @@ class MainActivity : ComponentActivity() {
                                     isLoading = true
                                     coroutineScope.launch {
                                         try {
-                                            val response = CopilotClient.service.queryCopilot(QueryRequest(queryInput))
+                                            val response = CopilotClient.service.queryCopilot(
+                                                QueryRequest(
+                                                    query = queryInput,
+                                                    language = "vi",
+                                                    session_id = sessionId,
+                                                    session_ttl_min = ttlMin,
+                                                )
+                                            )
                                             copilotAnswer = response.answer
                                             citations = response.citations
+                                            response.session_id?.let { sessionId = it }
+                                            stmTurns = response.stm_turns ?: stmTurns
                                         } catch (e: Exception) {
                                             copilotAnswer = "Lỗi kết nối đến Backend: ${e.message}"
                                             citations = emptyList()
@@ -251,10 +339,17 @@ class MainActivity : ComponentActivity() {
                                     coroutineScope.launch {
                                         try {
                                             val response = CopilotClient.service.queryCopilot(
-                                                QueryRequest("Làm cách nào để bật hệ thống điều hòa HVAC trên buồng lái?")
+                                                QueryRequest(
+                                                    query = "Làm cách nào để bật hệ thống điều hòa HVAC trên buồng lái?",
+                                                    language = "vi",
+                                                    session_id = sessionId,
+                                                    session_ttl_min = ttlMin,
+                                                )
                                             )
                                             copilotAnswer = response.answer
                                             citations = response.citations
+                                            response.session_id?.let { sessionId = it }
+                                            stmTurns = response.stm_turns ?: stmTurns
                                         } catch (e: Exception) {
                                             copilotAnswer = "Lỗi xử lý câu nói: ${e.message}"
                                         } finally {
