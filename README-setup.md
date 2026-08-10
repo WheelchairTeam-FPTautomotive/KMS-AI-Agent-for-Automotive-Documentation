@@ -56,8 +56,8 @@ cd d:\Hackathon\reach_be\reach
 Sau khi Terminal 4 báo connected, mở Terminal 5. **Khuyến nghị (EC2 hoặc local):**
 
 ```powershell
-powershell.exe -ExecutionPolicy Bypass -File "H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\carsky-backend-tunnel.ps1" -Backend Ec2
-# Local gateway: ... -Backend Local
+powershell.exe -ExecutionPolicy Bypass -File "d:\Hackathon\KMS-AI-Agent-for-Automotive-Documentation\carsky-backend-tunnel.ps1" -Backend Local
+# Chú ý: Đã sửa lại đường dẫn ổ D và Backend Local.
 ```
 
 Script này: `adb reverse` (+ `ssh -L` nếu EC2) và kiểm tra health từ laptop **và** device. Trong app đặt Backend URL = `http://127.0.0.1:8000/` (không dùng EIP — trout không có internet egress).
@@ -84,22 +84,41 @@ adb reverse tcp:8000 tcp:8000
 
 Vì ứng dụng Copilot điều khiển phần cứng của xe (AC, Cửa, Gương) nên nó cần đặc quyền của hệ thống (System Privileged App).
 
-**✅ Nếu bạn CHỈ SỬA CODE (Logic, UI):**
-Bạn hoàn toàn có thể bấm nút **Run/Play (màu xanh)** trong Android Studio để chạy và test nhanh! Vì app đã được nạp vào hệ thống trước đó nên quyền đã được ghi nhớ.
+**❌ TUYỆT ĐỐI KHÔNG ĐƯỢC BẤM NÚT RUN/PLAY MÀU XANH TRONG ANDROID STUDIO!**
+Việc bấm nút Run/Play sẽ khiến Android Studio cài đặt đè ứng dụng bằng chữ ký ảo (debug signature) thông qua `adb install`. Hệ điều hành xe sẽ phát hiện sai chữ ký hệ thống, từ chối quyền VHAL, gây ra lỗi **Broken pipe (32)** hoặc **Crash ngầm khi điều khiển xe**.
 
-**❌ KHI NÀO PHẢI DÙNG SCRIPT ĐỂ DEPLOY?**
-Bạn **BẮT BUỘC** phải dùng Script dưới đây nếu:
-1. Bạn chạy app trên một chiếc xe ảo hoàn toàn mới (hoặc vừa reset data).
-2. Bạn vừa thêm quyền (Permission) mới vào file `AndroidManifest.xml` hoặc file `privapp-permissions-wheelchair.xml`.
-*(Nếu cố tình bấm Play trong 2 trường hợp này, xe sẽ từ chối quyền, dẫn đến lỗi app không đọc được trạng thái VHAL và crash ngầm).*
-
-**CÁCH CHẠY SCRIPT (Deploy mức Hệ thống):**
-1. Trong Android Studio: **Build** -> **Build Bundle(s) / APK(s)** -> **Build APK(s)**.
+**✅ CÁCH CHẠY CODE MỚI (Deploy mức Hệ thống - BẮT BUỘC):**
+Mỗi khi bạn sửa code UI/Logic và muốn test lên xe, bạn BẮT BUỘC phải làm 2 bước sau:
+1. Trong Android Studio: **Build** -> **Build Bundle(s) / APK(s)** -> **Build APK(s)** (Hoặc gõ `.\gradlew assembleDebug` ở terminal).
 2. Mở Terminal (PowerShell), chạy file script:
    ```powershell
    powershell.exe -ExecutionPolicy Bypass -File d:\Hackathon\KMS-AI-Agent-for-Automotive-Documentation\push_privapp.ps1
    ```
 3. Script sẽ đẩy file APK vào `/system/priv-app/WheelchairCopilot/` và reboot UI. Đợi vài giây là bạn có thể test!
+
+---
+
+## 🏎️ Hướng dẫn Test Tính năng Demo Hackathon (Driver Distraction)
+
+Để quay video demo tính năng **Khóa màn hình an toàn (Safety Lock) khi đang lái xe**, thay vì dùng GPIO Web (chạy không ổn định do bị Physics Engine của Carsky ghi đè), chúng ta sẽ dùng bộ script giả lập nội bộ đã cấu hình sẵn.
+
+> ⚠️ **LƯU Ý QUAN TRỌNG CHO TEAM DEV:** 
+> Các script `.ps1` hiện đang được code cứng với đường dẫn `d:\Hackathon\...` (VD: `d:\Hackathon\KMS-AI-Agent-for-Automotive-Documentation\Toggle-DrivingState.ps1`). 
+> **Mỗi máy dev cần tự mở file và thay đổi các đường dẫn này cho khớp với thư mục làm việc (workspace) trên máy cá nhân trước khi chạy lệnh!**
+
+**Cách Test (Mở Terminal ở máy tính):**
+
+1. **Mô phỏng xe đang chạy trên cao tốc (Lên 90km/h & Số D & Tụt Pin):**
+   ```powershell
+   powershell.exe -ExecutionPolicy Bypass -File "[Đường_Dẫn_Của_Bạn]\Toggle-DrivingState.ps1" -State Drive
+   ```
+   👉 *Kết quả:* Vận tốc nhảy lên 90km/h, Cần số sáng chữ D, Pin tự động tụt dần 1% mỗi 2 giây, và **Màn hình tự động khóa an toàn (Driver Distraction)**.
+
+2. **Mô phỏng dừng xe đèn đỏ (Về 0km/h & Số P):**
+   ```powershell
+   powershell.exe -ExecutionPolicy Bypass -File "[Đường_Dẫn_Của_Bạn]\Toggle-DrivingState.ps1" -State Park
+   ```
+   👉 *Kết quả:* Vận tốc về 0km/h, Cần số về P, Pin ngừng tụt và màn hình được mở khóa.
 
 ---
 

@@ -3,8 +3,10 @@
     <privapp-permissions package="com.wheelchair.cockpit">
         <permission name="android.car.permission.CONTROL_CAR_CLIMATE"/>
         <permission name="android.car.permission.CONTROL_CAR_DOORS"/>
+        <permission name="android.car.permission.CAR_TIRES"/>
         <permission name="android.car.permission.CAR_SPEED"/>
         <permission name="android.car.permission.CAR_POWERTRAIN"/>
         <permission name="android.car.permission.CAR_DRIVING_STATE"/>
+        <permission name="android.car.permission.CAR_ENERGY"/>
     </privapp-permissions>
 </permissions>

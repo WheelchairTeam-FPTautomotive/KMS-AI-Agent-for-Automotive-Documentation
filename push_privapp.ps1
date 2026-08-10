@@ -4,10 +4,10 @@ param(
     [string]$Backend = "Ec2"
 )
 
-$ADB = "D:\Android\Sdk\platform-tools\adb.exe"
+$ADB = "C:\Users\admin\AppData\Local\Android\Sdk\platform-tools\adb.exe"
 $s = "localhost:5555"
-$DocRoot = "H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation"
-$Apk = "H:\Project\KMS\cockpit-ui\app\build\outputs\apk\debug\app-debug.apk"
+$DocRoot = "d:\Hackathon\KMS-AI-Agent-for-Automotive-Documentation"
+$Apk = "d:\Hackathon\cockpit-ui\app\build\outputs\apk\debug\app-debug.apk"
 $Tunnel = Join-Path $DocRoot "carsky-backend-tunnel.ps1"
 
 if (-not (Test-Path $Apk)) {

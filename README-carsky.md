@@ -4,16 +4,16 @@ Complete runbook for deploying `com.wheelchair.cockpit` (Wheelchair Copilot) to 
 
 **Your machine paths (update if yours differ):**
 
-| Item | Path |
-|------|------|
-| Project root | `H:\Project\KMS` |
-| Cockpit UI | `H:\Project\KMS\cockpit-ui` |
-| ADB | `D:\Android\Sdk\platform-tools\adb.exe` |
-| Reach CLI | `C:\Users\A\Downloads\reach_be\reach\reach-backend.exe` |
-| Priv-app whitelist | `H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\privapp-permissions-wheelchair.xml` |
-| Debug APK | `H:\Project\KMS\cockpit-ui\app\build\outputs\apk\debug\app-debug.apk` |
-| Backend tunnel script | `H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\carsky-backend-tunnel.ps1` |
-| SSH key (EC2) | `%USERPROFILE%\.ssh\kms-ec2.pem` |
+| Item                  | Path                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------- |
+| Project root          | `H:\Project\KMS`                                                                              |
+| Cockpit UI            | `H:\Project\KMS\cockpit-ui`                                                                   |
+| ADB                   | `D:\Android\Sdk\platform-tools\adb.exe`                                                       |
+| Reach CLI             | `C:\Users\A\Downloads\reach_be\reach\reach-backend.exe`                                       |
+| Priv-app whitelist    | `H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\privapp-permissions-wheelchair.xml` |
+| Debug APK             | `H:\Project\KMS\cockpit-ui\app\build\outputs\apk\debug\app-debug.apk`                         |
+| Backend tunnel script | `H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\carsky-backend-tunnel.ps1`          |
+| SSH key (EC2)         | `%USERPROFILE%\.ssh\kms-ec2.pem`                                                              |
 
 PowerShell shortcut used below:
 
@@ -57,11 +57,11 @@ If probe prints `DIRECT WORKS` / `HTTP:200` on EIP: set Backend URL to `http://5
 
 Sample timings (session where tunnel worked, direct did not):
 
-| Path | Health TOTAL (approx) |
-|------|----------------------|
-| Device → `127.0.0.1` (middleware) | ~390 ms |
-| Laptop → EIP | ~290 ms |
-| Device → EIP | fail (`HTTP:000`, Host Unreachable) |
+| Path                                | Health TOTAL (approx)                 |
+| ----------------------------------- | ------------------------------------- |
+| Device →`127.0.0.1` (middleware) | ~390 ms                               |
+| Laptop → EIP                       | ~290 ms                               |
+| Device → EIP                       | fail (`HTTP:000`, Host Unreachable) |
 
 ---
 
@@ -153,11 +153,11 @@ $ADB = "D:\Android\Sdk\platform-tools\adb.exe"
 3. Enable **Developer mode**.
 4. Set **Backend base URL**, tap **Apply**, then **Check health**.
 
-| Where the app runs | Backend base URL | Why |
-|--------------------|------------------|-----|
-| **Carsky → EC2 or laptop** | `http://127.0.0.1:8000/` | Hits guest loopback; reverse (+ SSH) reaches gateway |
-| Direct EC2 EIP from Carsky | `http://52.64.18.95:8000/` | **Fails** — no guest egress (CLEARTEXT still needs NSC if you test from a host that can route) |
-| Local AAOS emulator only | `http://10.0.2.2:8000/` | Emulator host alias — **does not work on Carsky trout** |
+| Where the app runs                | Backend base URL             | Why                                                                                                   |
+| --------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Carsky → EC2 or laptop** | `http://127.0.0.1:8000/`   | Hits guest loopback; reverse (+ SSH) reaches gateway                                                  |
+| Direct EC2 EIP from Carsky        | `http://52.64.18.95:8000/` | **Fails** — no guest egress (CLEARTEXT still needs NSC if you test from a host that can route) |
+| Local AAOS emulator only          | `http://10.0.2.2:8000/`    | Emulator host alias —**does not work on Carsky trout**                                         |
 
 Also valid on Carsky: `http://localhost:8000/`.
 
@@ -169,11 +169,11 @@ Cleartext HTTP domains are allowlisted in `cockpit-ui/app/src/main/res/xml/netwo
 OK - 80 - ~20ms
 ```
 
-| FAIL message | Meaning |
-|--------------|---------|
-| `CLEARTEXT communication … not permitted` | NSC missing host — add domain, rebuild |
-| `Failed to connect to /52.64.…` | Using EIP on Carsky — switch to `127.0.0.1` + tunnel script |
-| `Failed to connect to /127.0.0.1:8000` | No reverse / no SSH-L / gateway down — re-run `carsky-backend-tunnel.ps1` |
+| FAIL message                                 | Meaning                                                                     |
+| -------------------------------------------- | --------------------------------------------------------------------------- |
+| `CLEARTEXT communication … not permitted` | NSC missing host — add domain, rebuild                                     |
+| `Failed to connect to /52.64.…`           | Using EIP on Carsky — switch to`127.0.0.1` + tunnel script               |
+| `Failed to connect to /127.0.0.1:8000`     | No reverse / no SSH-L / gateway down — re-run`carsky-backend-tunnel.ps1` |
 
 ### Flow (mental model)
 
@@ -216,7 +216,7 @@ Use this when:
 
 #### 4a. Build the APK
 
-Android Studio → **Build** → **Build Bundle(s) / APK(s)** → **Build APK(s)**  
+Android Studio → **Build** → **Build Bundle(s) / APK(s)** → **Build APK(s)**
 Output: `H:\Project\KMS\cockpit-ui\app\build\outputs\apk\debug\app-debug.apk`
 
 #### 4b. Clear the old system copy (signature lock)
@@ -283,38 +283,38 @@ powershell.exe -ExecutionPolicy Bypass -File "...\push_privapp.ps1" -Backend Loc
 
 ## 6. End-to-end checklist
 
-| # | Check |
-|---|--------|
-| 1 | Reach tunnel terminal still listening on `127.0.0.1:5555` |
-| 2 | `adb devices` shows `localhost:5555 device` |
+| # | Check                                                                              |
+| - | ---------------------------------------------------------------------------------- |
+| 1 | Reach tunnel terminal still listening on`127.0.0.1:5555`                         |
+| 2 | `adb devices` shows `localhost:5555 device`                                    |
 | 3 | `carsky-backend-tunnel.ps1 -Backend Ec2` (or Local) → dual health **200** |
-| 4 | `adb reverse --list` shows `tcp:8000 tcp:8000` |
-| 5 | App Backend URL = `http://127.0.0.1:8000/` (not EIP, not `10.0.2.2` on Carsky) |
-| 6 | System Settings health = **OK** (green) |
-| 7 | Carsky browser **mic** + **Audio/speaker** enabled |
-| 8 | App installed under `/system/priv-app/WheelchairCopilot/` (for VHAL privileges) |
-| 9 | Voice: Logcat `Backend TTS play … focus=1` + hear audio in browser/host |
+| 4 | `adb reverse --list` shows `tcp:8000 tcp:8000`                                 |
+| 5 | App Backend URL =`http://127.0.0.1:8000/` (not EIP, not `10.0.2.2` on Carsky)  |
+| 6 | System Settings health =**OK** (green)                                       |
+| 7 | Carsky browser**mic** + **Audio/speaker** enabled                      |
+| 8 | App installed under`/system/priv-app/WheelchairCopilot/` (for VHAL privileges)   |
+| 9 | Voice: Logcat`Backend TTS play … focus=1` + hear audio in browser/host          |
 
 ---
 
 ## 7. Troubleshooting
 
-| Symptom | Cause | Fix |
-|---------|--------|-----|
-| `listen EADDRINUSE … 5555` | Tunnel already running / port taken | Kill old `reach-backend`; restart one tunnel |
-| `adb` not recognized | Not on PATH | Use full path `D:\Android\Sdk\platform-tools\adb.exe` |
-| Carsky ADB shell `Connection closed (code 1006)` | WebSocket drop in Carsky UI | Ignore UI shell; use local Reach + `adb` |
-| `INSTALL_FAILED_UPDATE_INCOMPATIBLE` | Different debug key vs installed APK | Step **4b** then **4c** |
-| `DELETE_FAILED_INTERNAL_ERROR` on uninstall | App is system priv-app | `rm -rf /system/priv-app/WheelchairCopilot` after `root` + `remount` |
-| Read-only filesystem on push | `/system` not remounted | `adb root` → `adb remount` then push |
-| Health **FAIL** / CLEARTEXT to EIP | Guest cannot egress / NSC | Use `127.0.0.1` + tunnel script; rebuild if NSC changed |
-| Health FAIL to `127.0.0.1:8000` | No reverse / SSH-L / gateway down | Re-run `carsky-backend-tunnel.ps1` |
-| Device `ping 52.64…` Host Unreachable | Expected on trout | Not an AWS SG bug — use tunnel |
-| Gateway log `[Edge TTS] Generated…` but no cabin sound | Carsky speaker path / browser mute | Enable Audio on IVI/WIDE; unmute tab; `audio_vbuffer is full` = HAL writes with no host drain |
-| Logcat `Backend TTS play` missing | Old APK | Rebuild / reinstall; confirm new play path |
-| Voice: audio error / standby | Tunnel down | Re-run tunnel script + health OK |
-| HVAC always OFF / VHAL denied | Lost privileged install | Re-run **4c** with whitelist XML |
-| After `push_privapp` / stop+start, API fails | Reverse dropped | Re-run tunnel script |
+| Symptom                                                  | Cause                                | Fix                                                                                            |
+| -------------------------------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `listen EADDRINUSE … 5555`                            | Tunnel already running / port taken  | Kill old`reach-backend`; restart one tunnel                                                  |
+| `adb` not recognized                                   | Not on PATH                          | Use full path`D:\Android\Sdk\platform-tools\adb.exe`                                         |
+| Carsky ADB shell`Connection closed (code 1006)`        | WebSocket drop in Carsky UI          | Ignore UI shell; use local Reach +`adb`                                                      |
+| `INSTALL_FAILED_UPDATE_INCOMPATIBLE`                   | Different debug key vs installed APK | Step**4b** then **4c**                                                             |
+| `DELETE_FAILED_INTERNAL_ERROR` on uninstall            | App is system priv-app               | `rm -rf /system/priv-app/WheelchairCopilot` after `root` + `remount`                     |
+| Read-only filesystem on push                             | `/system` not remounted            | `adb root` → `adb remount` then push                                                      |
+| Health**FAIL** / CLEARTEXT to EIP                  | Guest cannot egress / NSC            | Use`127.0.0.1` + tunnel script; rebuild if NSC changed                                       |
+| Health FAIL to`127.0.0.1:8000`                         | No reverse / SSH-L / gateway down    | Re-run`carsky-backend-tunnel.ps1`                                                            |
+| Device`ping 52.64…` Host Unreachable                  | Expected on trout                    | Not an AWS SG bug — use tunnel                                                                |
+| Gateway log`[Edge TTS] Generated…` but no cabin sound | Carsky speaker path / browser mute   | Enable Audio on IVI/WIDE; unmute tab;`audio_vbuffer is full` = HAL writes with no host drain |
+| Logcat`Backend TTS play` missing                       | Old APK                              | Rebuild / reinstall; confirm new play path                                                     |
+| Voice: audio error / standby                             | Tunnel down                          | Re-run tunnel script + health OK                                                               |
+| HVAC always OFF / VHAL denied                            | Lost privileged install              | Re-run**4c** with whitelist XML                                                          |
+| After`push_privapp` / stop+start, API fails            | Reverse dropped                      | Re-run tunnel script                                                                           |
 
 ### Playback notes (cockpit)
 
