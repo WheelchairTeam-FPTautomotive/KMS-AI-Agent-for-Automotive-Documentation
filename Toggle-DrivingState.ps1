@@ -3,7 +3,8 @@ param(
     [string]$State = 'Drive'
 )
 
-$Adb = "C:\Users\admin\AppData\Local\Android\Sdk\platform-tools\adb.exe"
+# MODIFIED: match local SDK
+$Adb = "D:\Android\Sdk\platform-tools\adb.exe"
 $Device = "localhost:5555"
 
 Write-Host "Switching vehicle state to: $State" -ForegroundColor Cyan

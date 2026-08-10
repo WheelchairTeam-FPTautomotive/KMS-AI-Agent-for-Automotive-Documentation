@@ -29,7 +29,8 @@ param(
     [string]$Ec2Host = "52.64.18.95",
     [string]$SshUser = "ubuntu",
     [string]$SshKey = "$env:USERPROFILE\.ssh\kms-ec2.pem",
-    [string]$Adb = "C:\Users\admin\AppData\Local\Android\Sdk\platform-tools\adb.exe",
+    # MODIFIED: match local SDK (was C:\Users\admin\...)
+    [string]$Adb = "D:\Android\Sdk\platform-tools\adb.exe",
     [string]$Serial = "localhost:5555",
     [int]$Port = 8000,
     [switch]$SkipHealth
