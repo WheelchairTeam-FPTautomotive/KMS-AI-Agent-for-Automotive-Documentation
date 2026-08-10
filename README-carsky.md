@@ -4,16 +4,18 @@ Complete runbook for deploying `com.wheelchair.cockpit` (Wheelchair Copilot) to 
 
 **Your machine paths (update if yours differ):**
 
-| Item                  | Path                                                                                            |
-| --------------------- | ----------------------------------------------------------------------------------------------- |
-| Project root          | `H:\Project\KMS`                                                                              |
-| Cockpit UI            | `H:\Project\KMS\cockpit-ui`                                                                   |
-| ADB                   | `D:\Android\Sdk\platform-tools\adb.exe`                                                       |
-| Reach CLI             | `C:\Users\A\Downloads\reach_be\reach\reach-backend.exe`                                       |
-| Priv-app whitelist    | `H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\privapp-permissions-wheelchair.xml` |
-| Debug APK             | `H:\Project\KMS\cockpit-ui\app\build\outputs\apk\debug\app-debug.apk`                         |
-| Backend tunnel script | `H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\carsky-backend-tunnel.ps1`          |
-| SSH key (EC2)         | `%USERPROFILE%\.ssh\kms-ec2.pem`                                                              |
+| Item | Path |
+| ---- | ---- |
+| Project root | `H:\Project\KMS` |
+| Cockpit UI | `H:\Project\KMS\cockpit-ui` |
+| ADB | `D:\Android\Sdk\platform-tools\adb.exe` |
+| Reach CLI | `C:\Users\A\Downloads\reach_be\reach\reach-backend.exe` |
+| Priv-app whitelist | `H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\privapp-permissions-wheelchair.xml` |
+| Debug APK | `H:\Project\KMS\cockpit-ui\app\build\outputs\apk\debug\app-debug.apk` |
+| Backend tunnel script | `H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\carsky-backend-tunnel.ps1` |
+| Media stack installer | `H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\install-media-stack.ps1` |
+| Local media assets (laptop) | `C:\Users\A\Downloads\media` |
+| SSH key (EC2) | `%USERPROFILE%\.ssh\kms-ec2.pem` |
 
 PowerShell shortcut used below:
 
@@ -278,6 +280,55 @@ powershell.exe -ExecutionPolicy Bypass -File "H:\Project\KMS\KMS-AI-Agent-for-Au
 # Local gateway instead of EC2:
 powershell.exe -ExecutionPolicy Bypass -File "...\push_privapp.ps1" -Backend Local
 ```
+
+After `MEDIA_CONTENT_CONTROL` is added to the whitelist XML, always use the priv-app path (not plain `adb install -r`) so multi-app `MediaSession` control is granted.
+
+---
+
+## 5b. Install media stack (YouTube Music + SoundCloud + local MP3s)
+
+Assets live on the laptop at `C:\Users\A\Downloads\media` (YT Music CAR APKs, SoundCloud `.apkm` bundles, demo MP3s).
+
+With Reach ADB connected (`localhost:5555`):
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File `
+  "H:\Project\KMS\KMS-AI-Agent-for-Automotive-Documentation\install-media-stack.ps1"
+```
+
+What the script does:
+
+1. Reads device ABI (`arm64-v8a` vs `x86_64`) and picks the matching YouTube Music CAR APK.
+2. Extracts the best SoundCloud `.apkm` and runs `adb install-multiple` with `base.apk` + ABI split(s).
+3. Pushes all `*.mp3` to `/sdcard/Music/Wheelchair/`.
+4. Fires **per-file** `MEDIA_SCANNER_SCAN_FILE` broadcasts (Android 13+ / AAOS — do not rely on `MEDIA_MOUNTED`).
+5. Optionally launches YT Music and SoundCloud once for first-run.
+
+Useful flags: `-SkipApkInstall`, `-SkipMp3`, `-SkipLaunch`, `-Serial emulator-5554`, `-MediaDir "D:\path\to\media"`.
+
+Verify:
+
+```powershell
+& $ADB -s $s shell pm list packages | Select-String "youtube.music|soundcloud"
+& $ADB -s $s shell ls /sdcard/Music/Wheelchair
+```
+
+**Notes:** YT Music CAR may need Play Services / account. SoundCloud phone APKs can be awkward on AAOS. Cockpit still falls back to `LocalMediaService` for the pushed MP3s.
+
+**Android Studio emulator (no `/system` remount):** cross-app YT Music / SoundCloud control uses a Notification Listener (not priv-app). After installing the cockpit APK:
+
+```powershell
+$ADB = "D:\Android\Sdk\platform-tools\adb.exe"
+$s = "emulator-5554"
+$listener = "com.wheelchair.cockpit/com.wheelchair.cockpit.media.MediaNotificationListener"
+& $ADB -s $s shell cmd notification allow_listener $listener
+# AAOS driver user:
+& $ADB -s $s shell settings --user 10 put secure enabled_notification_listeners $listener
+& $ADB -s $s shell am force-stop com.wheelchair.cockpit
+& $ADB -s $s shell am start -n com.wheelchair.cockpit/.MainActivity
+```
+
+Then open Media → tap **YT Music**. Metadata/transport should follow the YouTube Music session. On Carsky, priv-app `MEDIA_CONTENT_CONTROL` remains the primary path.
 
 ---
 
